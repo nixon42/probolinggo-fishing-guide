@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0e0d12">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Probolinggo Angler's Guide - Panduan Mancing Pesisir & Taktis Selat Madura Probolinggo: 12 Spot Pesisir, 18 Spesies Ikan, Taktik Angin Gending, dan Rigging.">
+  <title>Probolinggo Angler's Guide / Panduan Mancing Probolinggo</title>
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('pbg_fishing_theme') || 'sunset';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {
+        document.documentElement.setAttribute('data-theme', 'sunset');
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       INLINE SVG SYMBOLS (100% Offline Capability, Zero External Network Requests)
+       ======================================================================== -->
+  <svg style="display: none;" aria-hidden="true">
+    <defs>
+      <!-- Brand Angler Hook Icon -->
+      <symbol id="icon-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="2"></circle>
+        <path d="M12 7v8a4 4 0 0 1-8 0v-2"></path>
+        <polyline points="2 15 4 13 6 15"></polyline>
+      </symbol>
+
+      <!-- Pin / Spot Icon -->
+      <symbol id="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </symbol>
+
+      <!-- Fish Icon -->
+      <symbol id="icon-fish" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6.5 12c.94-3.46 4.94-6 8.5-6 3.56 0 6.06 2.54 7 6-.94 3.46-3.44 6-7 6s-7.56-2.54-8.5-6Z"></path>
+        <path d="M18 12v.5"></path>
+        <path d="M16 10h.01"></path>
+        <path d="M2 7l4 5-4 5V7z"></path>
+      </symbol>
+
+      <!-- Compass / Tactics / Wave Icon -->
+      <symbol id="icon-tactics" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+      </symbol>
+
+      <!-- Search Icon -->
+      <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </symbol>
+
+      <!-- Close / Clear Icon -->
+      <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </symbol>
+
+      <!-- Water Layer: Dasar (Anchor) -->
+      <symbol id="icon-layer-dasar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="3"></circle>
+        <line x1="12" y1="22" x2="12" y2="8"></line>
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+      </symbol>
+
+      <!-- Water Layer: Tengah (Fish at depth) -->
+      <symbol id="icon-layer-tengah" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 6c3-2 6-2 10 0s7 2 10 0"></path>
+        <path d="M5 13c1.5-1.5 4-1.5 7 0s5.5 1.5 7 0"></path>
+        <path d="M2 20c3-2 6-2 10 0s7 2 10 0"></path>
+      </symbol>
+
+      <!-- Water Layer: Permukaan (Wave) -->
+      <symbol id="icon-layer-permukaan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 10c3.5-3 6.5-3 10 0s6.5 3 10 0"></path>
+        <path d="M2 16c3.5-3 6.5-3 10 0s6.5 3 10 0"></path>
+      </symbol>
+
+      <!-- Wind Icon (Angin Gending) -->
+      <symbol id="icon-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9.59 4.59A2 2 0 1 1 11 8H2"></path>
+        <path d="M12.59 19.41A2 2 0 1 0 14 16H2"></path>
+        <path d="M17.73 7.73A2.5 2.5 0 1 1 19.5 12H2"></path>
+      </symbol>
+
+      <!-- Clock / Time Icon -->
+      <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </symbol>
+
+      <!-- Tide Icon -->
+      <symbol id="icon-tide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v20"></path>
+        <path d="m17 7-5-5-5 5"></path>
+        <path d="m17 17-5 5-5-5"></path>
+      </symbol>
+
+      <!-- Temp / Thermometer Icon -->
+      <symbol id="icon-temp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path>
+      </symbol>
+
+      <!-- Warning / Hazard Icon -->
+      <symbol id="icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </symbol>
+
+      <!-- Rigging / Tackle Icon -->
+      <symbol id="icon-rig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M12 2v7"></path>
+        <path d="M12 15v7"></path>
+        <path d="m4.93 4.93 4.95 4.95"></path>
+        <path d="m14.12 14.12 4.95 4.95"></path>
+      </symbol>
+
+      <!-- Copy Icon -->
+      <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect width="13" height="13" x="9" y="9" rx="2" ry="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </symbol>
+
+      <!-- Checkmark Icon -->
+      <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </symbol>
+
+      <!-- External Map Icon -->
+      <symbol id="icon-map-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+        <polyline points="15 3 21 3 21 9"></polyline>
+        <line x1="10" y1="14" x2="21" y2="3"></line>
+      </symbol>
+
+      <!-- Reset / Refresh Icon -->
+      <symbol id="icon-reset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+        <path d="M21 3v5h-5"></path>
+        <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+        <path d="M8 16H3v5"></path>
+      </symbol>
+
+      <!-- Map Tab Icon -->
+      <symbol id="icon-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+        <line x1="8" y1="2" x2="8" y2="18"></line>
+        <line x1="16" y1="6" x2="16" y2="22"></line>
+      </symbol>
+
+      <!-- Star Outline Icon -->
+      <symbol id="icon-star" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </symbol>
+
+      <!-- Star Filled Icon -->
+      <symbol id="icon-star-filled" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </symbol>
+
+      <!-- Chevron Down Icon -->
+      <symbol id="icon-chevron-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </symbol>
+    </defs>
+  </svg>
+
+  <div class="app-container">
+
+    <!-- ======================================================================
+         APP HEADER
+         ====================================================================== -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-wrapper">
+          <div class="brand-icon" aria-hidden="true">
+            <svg><use href="#icon-brand"></use></svg>
+          </div>
+          <div class="brand-info">
+            <h1 class="app-title">Probolinggo Angler's Guide</h1>
+            <div class="app-subtitle">Panduan Mancing Pesisir &amp; Taktis</div>
+          </div>
+        </div>
+        <div class="header-badges">
+          <span class="badge-offline" title="Aplikasi dapat berjalan 100% tanpa sambungan internet">100% Offline</span>
+          <button type="button" id="btn-theme-switcher" class="btn-theme-pill" onclick="app.cycleTheme()" title="Ganti Skema Warna Tema Aplikasi">
+            <span id="theme-icon">🌅</span>
+            <span id="theme-name-label">Senja</span>
+          </button>
+        </div>
+      </div>
+      <div class="header-stats">
+        <span class="stat-item"><strong>12</strong> Spot Pesisir</span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item"><strong>18</strong> Spesies Ikan</span>
+        <span class="stat-divider">•</span>
+        <span class="stat-item"><strong>Selat Madura</strong></span>
+      </div>
+    </header>
+
+    <!-- ======================================================================
+         LIVE SOLUNAR & FEEDING STATUS BANNER (REAL-TIME WIB)
+         ====================================================================== -->
+    <section class="live-solunar-banner" id="live-solunar-banner" aria-label="Status Waktu Makan Ikan Real-Time">
+      <div class="solunar-header">
+        <div class="solunar-time-box">
+          <span class="pulse-live-dot" aria-hidden="true"></span>
+          <span class="solunar-clock" id="solunar-clock">10:35 WIB</span>
+        </div>
+        <div class="solunar-phase-badge" id="solunar-phase-badge">
+          <span id="solunar-phase-icon">☀️</span>
+          <span id="solunar-phase-title">Siang Hari (Teduh / Palung)</span>
+        </div>
+      </div>
+      <div class="solunar-desc" id="solunar-desc">
+        Suhu air permukaan hangat. Ikan cenderung bersembunyi di bawah bayangan tiang dermaga atau ceruk batu dalam.
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SEARCH & MULTI-CRITERIA FILTERS
+         ====================================================================== -->
+    <section class="controls-container" id="controls-section" aria-label="Pencarian dan Filter">
+      <!-- Search Bar -->
+      <div class="search-bar-wrapper">
+        <span class="search-icon" aria-hidden="true">
+          <svg><use href="#icon-search"></use></svg>
+        </span>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="search-input" 
+          placeholder="Cari spot, ikan, umpan, teknik..." 
+          autocomplete="off" 
+          spellcheck="false"
+          aria-label="Cari spot mancing atau jenis ikan">
+        <button type="button" id="clear-search-btn" class="clear-search-btn" aria-label="Hapus pencarian">
+          <svg width="18" height="18"><use href="#icon-close"></use></svg>
+        </button>
+      </div>
+
+      <!-- Filter Rows -->
+      <div class="filter-groups-wrapper">
+        <!-- Spot Category Filters (Primary Row) -->
+        <div class="filter-row" id="category-filter-row" role="radiogroup" aria-label="Filter Kategori Spot">
+          <span class="filter-label">Kategori:</span>
+          <button type="button" class="filter-chip active" data-filter="category" data-value="all" aria-pressed="true">Semua</button>
+          <button type="button" class="filter-chip chip-fav" data-filter="category" data-value="favorite" aria-pressed="false" id="filter-chip-fav" title="Tampilkan spot atau ikan yang Anda simpan di HP">⭐ Favorit (<span id="fav-count">0</span>)</button>
+          <button type="button" class="filter-chip chip-beginner" data-filter="category" data-value="beginner" aria-pressed="false" title="Tampilkan spot pantai wisata yang sangat ramah pemula & gear seadanya">🔰 Ramah Pemula</button>
+          <button type="button" class="filter-chip" data-filter="category" data-value="Breakwater" aria-pressed="false">Breakwater</button>
+          <button type="button" class="filter-chip" data-filter="category" data-value="Pantai Pasir" aria-pressed="false">Pantai Pasir</button>
+          <button type="button" class="filter-chip" data-filter="category" data-value="Muara" aria-pressed="false">Muara / Estuari</button>
+          <button type="button" class="filter-chip" data-filter="category" data-value="Dermaga" aria-pressed="false">Dermaga / Pelabuhan</button>
+        </div>
+
+        <!-- Toggle for Advanced Filters (Lapisan & Umpan) -->
+        <div class="advanced-filter-toggle-row">
+          <button type="button" class="btn-toggle-advanced-filters" id="btn-toggle-advanced-filters" aria-expanded="false" aria-controls="advanced-filters-wrapper">
+            <span class="toggle-icon">⚡</span>
+            <span id="toggle-advanced-label">Filter Lanjutan (Lapisan &amp; Umpan)</span>
+            <span class="active-badge" id="advanced-filter-badge" style="display: none;">0</span>
+            <svg width="12" height="12" class="caret-icon"><use href="#icon-chevron-down"></use></svg>
+          </button>
+        </div>
+
+        <!-- Collapsible Advanced Filters Wrapper -->
+        <div class="advanced-filters-wrapper" id="advanced-filters-wrapper" style="display: none;">
+          <!-- Water Layer Filters -->
+          <div class="filter-row" id="layer-filter-row" role="radiogroup" aria-label="Filter Lapisan Air">
+            <span class="filter-label">Lapisan:</span>
+            <button type="button" class="filter-chip active" data-filter="layer" data-value="all" aria-pressed="true">Semua</button>
+            <button type="button" class="filter-chip chip-dasar" data-filter="layer" data-value="Dasar" aria-pressed="false">
+              <svg width="14" height="14" aria-hidden="true"><use href="#icon-layer-dasar"></use></svg> Dasar (Benthic)
+            </button>
+            <button type="button" class="filter-chip chip-tengah" data-filter="layer" data-value="Tengah" aria-pressed="false">
+              <svg width="14" height="14" aria-hidden="true"><use href="#icon-layer-tengah"></use></svg> Tengah (Pelagic)
+            </button>
+            <button type="button" class="filter-chip chip-permukaan" data-filter="layer" data-value="Permukaan" aria-pressed="false">
+              <svg width="14" height="14" aria-hidden="true"><use href="#icon-layer-permukaan"></use></svg> Permukaan (Surface)
+            </button>
+          </div>
+
+          <!-- Bait Filters -->
+          <div class="filter-row" id="bait-filter-row" role="radiogroup" aria-label="Filter Umpan">
+            <span class="filter-label">Umpan:</span>
+            <button type="button" class="filter-chip active" data-filter="bait" data-value="all" aria-pressed="true">Semua</button>
+            <button type="button" class="filter-chip" data-filter="bait" data-value="udang" aria-pressed="false">Udang Hidup</button>
+            <button type="button" class="filter-chip" data-filter="bait" data-value="cacing" aria-pressed="false">Cacing Laut</button>
+            <button type="button" class="filter-chip" data-filter="bait" data-value="irisan" aria-pressed="false">Ikan Irisan</button>
+            <button type="button" class="filter-chip" data-filter="bait" data-value="lure" aria-pressed="false">Lure / Jig / Minnow</button>
+            <button type="button" class="filter-chip" data-filter="bait" data-value="lumut" aria-pressed="false">Lumut</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Filter Status & Reset -->
+      <div class="filter-status-bar" id="filter-status-bar">
+        <span class="active-filter-indicator" id="active-filter-indicator">
+          <span>●</span> <span id="active-filter-text">0 Filter Aktif</span>
+        </span>
+        <button type="button" id="btn-reset-filters" class="btn-reset-filters" aria-label="Reset semua filter">
+          <svg width="14" height="14"><use href="#icon-reset"></use></svg> Reset Filter
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         TAB VIEW PANELS
+         ====================================================================== -->
+    <main class="views-wrapper">
+
+      <!-- TAB 1: SPOTS VIEW -->
+      <section class="tab-content active" id="view-spots" role="tabpanel" aria-labelledby="nav-tab-spots">
+        <div class="view-summary-bar">
+          <span class="results-count" id="spots-count-label">Menampilkan 12 Spot Pesisir</span>
+          <span class="stat-highlight">Probolinggo, Jatim</span>
+        </div>
+        <div class="cards-grid" id="spots-grid">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+        <div class="empty-state" id="spots-empty" style="display: none;">
+          <svg class="empty-icon"><use href="#icon-pin"></use></svg>
+          <div class="empty-title">Tidak Ada Spot yang Sesuai</div>
+          <p class="empty-description">Tidak ditemukan spot mancing dengan kata kunci dan filter yang dipilih. Coba atur ulang filter pencarian Anda.</p>
+          <button type="button" class="btn-card-action btn-detail" onclick="app.resetAllFilters()">Reset Filter</button>
+        </div>
+      </section>
+
+      <!-- TAB 2: INTERACTIVE MAP VIEW -->
+      <section class="tab-content" id="view-map" role="tabpanel" aria-labelledby="nav-tab-map">
+        <div class="view-summary-bar">
+          <span class="results-count" id="map-spots-count-label">Peta Titik Spot Pesisir (12 Lokasi)</span>
+          <span class="stat-highlight">GIS Selat Madura</span>
+        </div>
+
+        <div class="map-wrapper-card">
+          <!-- Top Control Header inside Map Card -->
+          <div class="map-card-header">
+            <div class="map-header-title">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <div class="map-header-text">
+                <strong>Peta Interaktif Pesisir Probolinggo</strong>
+                <span class="map-header-sub">Ketuk titik marker untuk info lengkap &amp; rute</span>
+              </div>
+            </div>
+            <div class="map-header-actions">
+              <button type="button" class="btn-map-control" id="btn-reset-map" onclick="app.resetMapBounds()" title="Tampilkan semua spot pesisir di layar">
+                <svg width="14" height="14"><use href="#icon-reset"></use></svg>
+                <span>Semua Spot</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Leaflet Map Canvas Container -->
+          <div id="fishing-map" class="fishing-map-container" role="region" aria-label="Peta Interaktif Titik Mancing Probolinggo"></div>
+
+          <!-- Quick Spot Pills Selector (matching user's reference visualizer) -->
+          <div class="map-pills-bar">
+            <div class="map-pills-header">
+              <span class="map-pills-label">Pilih Titik Spot:</span>
+              <span class="map-pills-hint">Klik untuk fokus &amp; buka rute Google Maps</span>
+            </div>
+            <div class="map-pills-scroll" id="map-spot-pills" role="tablist" aria-label="Pilihan Titik Spot Peta">
+              <!-- Dynamically populated by app.js -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: SPECIES VIEW -->
+      <section class="tab-content" id="view-species" role="tabpanel" aria-labelledby="nav-tab-species">
+        <div class="view-summary-bar">
+          <span class="results-count" id="species-count-label">Menampilkan 18 Spesies Ikan</span>
+          <span class="stat-highlight">Karakteristik &amp; Rigging</span>
+        </div>
+        <div class="cards-grid" id="species-grid">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+        <div class="empty-state" id="species-empty" style="display: none;">
+          <svg class="empty-icon"><use href="#icon-fish"></use></svg>
+          <div class="empty-title">Tidak Ada Spesies Ikan yang Sesuai</div>
+          <p class="empty-description">Tidak ditemukan jenis ikan dengan kriteria pencarian yang aktif. Coba ubah kata kunci atau hapus filter lapisan/umpan.</p>
+          <button type="button" class="btn-card-action btn-detail" onclick="app.resetAllFilters()">Reset Filter</button>
+        </div>
+      </section>
+
+      <!-- TAB 3: TACTICS & WEATHER VIEW -->
+      <section class="tab-content" id="view-tactics" role="tabpanel" aria-labelledby="nav-tab-tactics">
+        <div class="view-summary-bar">
+          <span class="results-count">Taktik Lapangan &amp; Oseanografi</span>
+          <span class="stat-highlight">Khas Selat Madura</span>
+        </div>
+        <div class="tactics-container">
+
+          <!-- 0. PANDUAN KILAT PEMULA & GEAR SEADANYA -->
+          <article class="tactics-card tactics-card-beginner">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-beginner">
+                <span style="font-size: 1.35rem;">🔰</span>
+              </div>
+              <div>
+                <div class="badge badge-beginner" style="display: inline-block; margin-bottom: 4px;">Rekomendasi Pemula</div>
+                <h2 class="tactics-card-title">Panduan Kilat Pemula: Trik Anti-Boncos Gear Seadanya</h2>
+                <div class="tactics-card-subtitle">Strategi Mancing Pantai Wisata Probolinggo Tanpa Perlu Skill Melempar Jauh (Casting)</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <p>Khusus bagi Anda yang baru pertama kali mancing ke pesisir Probolinggo dengan joran/tegek biasa dan tidak ingin ada masalah dengan warga lokal, terapkan 4 kunci sukses ini:</p>
+              
+              <div class="tactics-grid">
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🏆 1. Pilih Spot Wisata: Pantai Bentar</div>
+                  <div class="tactics-box-body">
+                    <strong>Kunci Sukses:</strong> Pantai Bentar memiliki jembatan dermaga kayu panjang menjorok ratusan meter ke laut lepas. <em>Tidak perlu keahlian casting melempar jauh sama sekali</em>. Cukup berdiri di atas dermaga, kaitkan umpan, lalu ulur senar langsung vertikal ke samping tiang dermaga (teknik ngolong). Tiang jembatan kaya tiram &amp; teritip yang jadi sarang kipper, kerapu cilik, dan belanak.
+                  </div>
+                </div>
+                
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🪝 2. Rahasia Mata Kail Kecil (No. 3 - 5)</div>
+                  <div class="tactics-box-body">
+                    <strong>Penyebab Utama Boncos:</strong> 90% pemula gagal karena menggunakan kail terlalu besar (No. 8–12). Ikan pinggiran dermaga bermulut mungil. Selalu gunakan mata kail ukuran <strong>No. 3, 4, atau 5 (standar Chinu / Carbon)</strong>. Umpan kecil langsung tertelan utuh dan joran langsung melengkung strike!
+                  </div>
+                </div>
+                
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🦐 3. Umpan Murah Meriah Tapi Ganas</div>
+                  <div class="tactics-box-body">
+                    <strong>Amunisi Terbaik:</strong> Beli udang tambak / udang putih segar di pasar tradisional cukup Rp 5.000–10.000. Kupas kulitnya, potong dagingnya kecil-kecil seukuran pentol korek api. Seluruh jenis ikan laut tidak tahan aroma udang segar. Alternatif kedua: remasan roti tawar lumat air laut untuk memikat gerombolan belanak &amp; kipper.
+                  </div>
+                </div>
+
+                <div class="tactics-box">
+                  <div class="tactics-box-title">⚓ 4. Rangkaian Timah Gantung 2 Kail</div>
+                  <div class="tactics-box-body">
+                    <strong>Cara Merangkai:</strong> Pasang timah pemberat kecil (ukuran J1/J2) di ujung paling bawah senar. Buat 1 atau 2 cabang kail berjarak 15 cm di atas timah. Turunkan hingga timah menyentuh dasar lalu angkat senar 20 cm agar menggantung tegang di samping tiang dermaga. Sambaran ikan akan langsung bergetar di ujung joran.
+                  </div>
+                </div>
+              </div>
+
+              <div class="alert-box alert-success" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(52, 211, 153, 0.5); color: #d1fae5; margin-top: 10px;">
+                <svg style="color: #34d399;"><use href="#icon-check"></use></svg>
+                <div><strong>Jam Terbaik Mancing Pemula:</strong> Datanglah pagi hari pukul <strong>06:30 – 09:30 WIB</strong> atau sore <strong>15:30 – 17:30 WIB</strong> saat air laut bergerak pasang naik. Di jam ini kawanan ikan berenang merapat ke pinggiran pantai mencari makan.</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 1. ANGIN GENDING ANALYSIS -->
+          <article class="tactics-card">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-wind">
+                <svg width="20" height="20"><use href="#icon-wind"></use></svg>
+              </div>
+              <div>
+                <h2 class="tactics-card-title">Analisis Fenomena Angin Gending</h2>
+                <div class="tactics-card-subtitle">Karakteristik Angin Fohn Lokal Probolinggo (Juli – September)</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <p><strong>Apa itu Angin Gending?</strong> Angin Gending adalah angin katabatik / fohn yang berhembus turun dari celah pegunungan Tengger/Bromo dan Argopuro menuju pesisir utara Probolinggo ke arah Selat Madura. Berkarakteristik <strong>sangat kencang, kering, dan bersuhu hangat</strong>, berkecepatan 20–35 knot pada siang hingga sore hari.</p>
+              <div class="tactics-grid">
+                <div class="tactics-box">
+                  <div class="tactics-box-title">
+                    <svg width="14" height="14" class="icon-warning"><use href="#icon-warning"></use></svg> Pengaruh ke Laut &amp; Ikan
+                  </div>
+                  <div class="tactics-box-body">
+                    Memicu gelombang chop pendek namun rapat dan curam di lepas pantai. Air permukaan menjadi sangat berbusa dan keruh tersapu angin. Ikan permukaan (Cendro, Barakuda) cenderung menyelam ke lapisan tengah dan dasar untuk mencari ketenangan.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">
+                    <svg width="14" height="14" style="color: #10b981;"><use href="#icon-check"></use></svg> Strategi Adaptasi Angler
+                  </div>
+                  <div class="tactics-box-body">
+                    Pilih spot dengan dinding penahan alami: <strong>Kolam Pelabuhan Tanjung Tembaga</strong>, <strong>Dermaga Kalibuntu</strong>, atau <strong>Muara Tongas</strong> berbakau. Mancinglah saat <em>Subuh (04:30 - 07:30 WIB)</em> saat hembusan angin darat masih reda. Gunakan timah kerucut J10–J12 agar umpan tidak terdorong arus permukaan.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 2. TIDAL & WATER STRATEGY -->
+          <article class="tactics-card">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-tides">
+                <svg width="20" height="20"><use href="#icon-tide"></use></svg>
+              </div>
+              <div>
+                <h2 class="tactics-card-title">Strategi Pasang Surut Selat Madura</h2>
+                <div class="tactics-card-subtitle">Pasang Purnama vs Pasang Perbani &amp; "The Rule of Thirds"</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <p>Pesisir Probolinggo dipengaruhi sistem pasang campuran condong harian ganda (semidiurnal) dengan amplitudo pasang mencapai 1.8 hingga 2.2 meter saat purnama.</p>
+              <div class="tactics-grid">
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🌙 Pasang Purnama (Spring Tide)</div>
+                  <div class="tactics-box-body">
+                    <strong>Kondisi:</strong> Arus sangat deras, pasang tertinggi menggenangi akar bakau tepi pantai.<br>
+                    <strong>Target:</strong> Kakap Putih (Barramundi) &amp; Mangrove Jack yang mengejar anakan udang dan ikan belanak masuk ke kanopi bakau.<br>
+                    <strong>Taktik:</strong> Lempar umpan tepat di celah pasang naik 2 jam sebelum puncak pasang.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🌓 Pasang Perbani (Neap Tide / Air Mati)</div>
+                  <div class="tactics-box-body">
+                    <strong>Kondisi:</strong> Arus laut tenang, air Selat Madura menjadi sangat jernih dan berkilau.<br>
+                    <strong>Target:</strong> Baronang, Kipper, Kerapu Karang, dan Senangin.<br>
+                    <strong>Taktik:</strong> Teknik pelampung gantung dengan umpan lumut sawah halus atau potongan udang kupas di celah tetrapod Mayangan.
+                  </div>
+                </div>
+              </div>
+              <div class="alert-box alert-warning">
+                <svg><use href="#icon-warning"></use></svg>
+                <div><strong>Kaidah 2 Jam Pasang Naik (Golden Feeding Hour):</strong> Ikan predator pesisir Probolinggo 80% paling aktif menyambar mangsa pada jam ke-2 dan ke-3 sejak air laut mulai pasang beranjak naik dari titik terendah.</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 3. SOLUNAR & PEAK FEEDING WINDOWS -->
+          <article class="tactics-card">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-solunar">
+                <svg width="20" height="20"><use href="#icon-clock"></use></svg>
+              </div>
+              <div>
+                <h2 class="tactics-card-title">Jam Makan Emas (Feeding Window)</h2>
+                <div class="tactics-card-subtitle">Waktu Paling Produktif di Sepanjang Garis Pantai Probolinggo</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <div class="detail-bullet-list">
+                <div class="detail-bullet-item">
+                  <div><strong>Subuh &amp; Fajar (04:30 – 06:45 WIB):</strong> Suhu air stabil (26°C - 27°C). Udang liar naik ke permukaan paparan pantai. Waktu terbaik untuk casting lure minnow dan topwater popper di Breakwater Mayangan dan Pantai Bentar.</div>
+                </div>
+                <div class="detail-bullet-item">
+                  <div><strong>Senja / Pergantian Cahaya (17:15 – 19:00 WIB):</strong> Visibilitas menurun, naluri berburu predator nokturnal (Kakap Putih, Kerapu Balong, Mangrove Jack) aktif maksimal di mulut muara dan celah batu.</div>
+                </div>
+                <div class="detail-bullet-item">
+                  <div><strong>Malam Hari di Bawah Lampu Dermaga (20:00 – 02:00 WIB):</strong> Lampu sorot kapal dan tiang dermaga Tanjung Tembaga &amp; Binor Harmony menarik jutaan rebon, teri, dan cumi. Menjadi arena pesta makan Talang-talang, Cendro, Belanak, dan Barakuda.</div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 4. RIGGING & TACKLE MASTERCLASS -->
+          <article class="tactics-card">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-rigging">
+                <svg width="20" height="20"><use href="#icon-rig"></use></svg>
+              </div>
+              <div>
+                <h2 class="tactics-card-title">Diagram Rangkaian &amp; Rigging Taktis</h2>
+                <div class="tactics-card-subtitle">Konstruksi Rangkaian Juara Pesisir Selat Madura</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <div class="tactics-grid">
+                <div class="tactics-box">
+                  <div class="tactics-box-title">⚓ Rangkaian Dasaran Glosor (Running Sinker)</div>
+                  <div class="tactics-box-body">
+                    <strong>Struktur:</strong> Main line PE 1.5-2.5 → Timah bolong lonjong (15-30g) → Manik pembatas → Kili-kili (Swivel) → Leader Fluorocarbon 1.5 meter (30-40 lb) → Kail Chinu No. 5-7.<br>
+                    <strong>Fungsi:</strong> Ikan Kakap Putih / Barramundi dapat menarik udang hidup tanpa merasakan berat timah. Sangat mematikan di Muara Tongas &amp; Tanjung Tembaga.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🪨 Rangkaian Timah Bawah (Paternoster Dropper)</div>
+                  <div class="tactics-box-body">
+                    <strong>Struktur:</strong> Swivel utama → Cabang T-knot ke kail Chinu/Live Bait (leader 25-35 cm) → Senar bawah ke timah gantung berbobot (leader timah dibuat lb lebih kecil agar mudah putus jika tersangkut).<br>
+                    <strong>Fungsi:</strong> Menjaga umpan udang/irisan ikan melayang bebas di atas dasar batu karang dan tetrapod tanpa tersangkut teritip.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🎯 Rangkaian Pelampung Gantung Hanyut</div>
+                  <div class="tactics-box-body">
+                    <strong>Struktur:</strong> Pelampung gabus/kayu sensitif ber-stopper kedalaman 1.5–3m → Timah lipat penyeimbang → Leader Fluorocarbon 10-15 lb halus → Kail Garong No. 5-7 (untuk Baronang) atau Chinu No. 1-2 (untuk Kipper &amp; Belanak).<br>
+                    <strong>Umpan:</strong> Lumut sawah sutra halus, adonan pelet, atau rebon segar.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🎣 Sabiki Kotrekan (Pencari Umpan Hidup)</div>
+                  <div class="tactics-box-body">
+                    <strong>Struktur:</strong> Rangkaian 5–7 mata kail bulu sutra sabiki ukuran No. 6–8 dengan timah bawah 20g.<br>
+                    <strong>Fungsi:</strong> Diayun vertikal di dermaga untuk mendapatkan anakan ikan tembang, kembung, dan lemuru hidup sebagai amunisi live-bait predator besar.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- 5. ANGLER SAFETY & HAZARD WARNINGS -->
+          <article class="tactics-card">
+            <div class="tactics-card-header">
+              <div class="tactics-card-icon icon-safety">
+                <svg width="20" height="20"><use href="#icon-warning"></use></svg>
+              </div>
+              <div>
+                <h2 class="tactics-card-title">Protokol Keselamatan &amp; Bahaya Pesisir</h2>
+                <div class="tactics-card-subtitle">Peringatan Kritis dari Komunitas Angler Lokal Probolinggo</div>
+              </div>
+            </div>
+            <div class="tactics-prose">
+              <div class="alert-box alert-danger">
+                <svg><use href="#icon-warning"></use></svg>
+                <div>
+                  <strong>Bahaya Tetrapod Beton &amp; Ombak Rogue:</strong>
+                  Struktur tetrapod di PPP Mayangan dan Binor memiliki celah rongga sedalam 4–6 meter. Selalu gunakan sepatu sol karet bergerigi atau boots felt anti-licin. <em>Jangan pernah membelakangi arah ombak laut lepas</em>, karena ombak pecah liar (rogue waves) dapat menyapu pemancing ke celah bebatuan tanpa aba-aba.
+                </div>
+              </div>
+
+              <div class="tactics-grid" style="margin-top: 10px;">
+                <div class="tactics-box">
+                  <div class="tactics-box-title">☠ Duri Beracun Sembilang &amp; Pari Pasir</div>
+                  <div class="tactics-box-body">
+                    Ikan Sembilang memiliki 3 duri beracun (1 dorsal, 2 pektoral), dan Ikan Pari memiliki taji bergerigi pada pangkal ekor. Racunnya menyebabkan demam tinggi, pembengkakan hebat, hingga nekrosis jaringan. <strong>Selalu gunakan lip grip dan tang panjang berhidung bengkok</strong> saat melepas kail. Jika tersengat, rendam segera dalam air panas (45°C - 50°C) untuk mengurai racun protein.
+                  </div>
+                </div>
+                <div class="tactics-box">
+                  <div class="tactics-box-title">🩹 Teritip Tajam &amp; Tiram Karang</div>
+                  <div class="tactics-box-body">
+                    Cangkang teritip pada tiang pancang dermaga dan tetrapod setajam silet serta berisiko tinggi menularkan bakteri laut <em>Vibrio vulnificus</em>. Selalu bawa antiseptik alkohol/betadine, perban tahan air, dan sarung tangan pancing berpelindung telapak tangan.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ======================================================================
+         BOTTOM SHEET / MODAL DRAWER
+         ====================================================================== -->
+    <div class="drawer-backdrop" id="drawer-backdrop" aria-hidden="true"></div>
+    <div class="drawer-sheet" id="drawer-sheet" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+      <div class="drawer-drag-handle" aria-hidden="true"></div>
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <h2 class="drawer-title" id="drawer-title">Detail Taktis</h2>
+          <span class="drawer-subtitle" id="drawer-subtitle"></span>
+        </div>
+        <div class="drawer-header-actions" style="display: flex; align-items: center; gap: 4px;">
+          <button type="button" class="btn-fav-toggle" id="btn-drawer-fav" title="Simpan ke Favorit">
+            <svg width="20" height="20"><use href="#icon-star"></use></svg>
+          </button>
+          <button type="button" class="btn-drawer-close" id="btn-drawer-close" aria-label="Tutup detail modal">
+            <svg width="20" height="20"><use href="#icon-close"></use></svg>
+          </button>
+        </div>
+      </div>
+      <div class="drawer-body" id="drawer-body">
+        <!-- Dynamically injected by app.js -->
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         BOTTOM STICKY NAVIGATION BAR
+         ====================================================================== -->
+    <nav class="bottom-nav" aria-label="Navigasi Utama Aplikasi">
+      <button type="button" class="nav-tab-btn active" id="nav-tab-spots" data-tab="spots" role="tab" aria-selected="true" aria-controls="view-spots">
+        <svg><use href="#icon-pin"></use></svg>
+        <span class="nav-tab-label">Spot Mancing</span>
+      </button>
+      <button type="button" class="nav-tab-btn" id="nav-tab-map" data-tab="map" role="tab" aria-selected="false" aria-controls="view-map">
+        <svg><use href="#icon-map"></use></svg>
+        <span class="nav-tab-label">Peta Spot</span>
+      </button>
+      <button type="button" class="nav-tab-btn" id="nav-tab-species" data-tab="species" role="tab" aria-selected="false" aria-controls="view-species">
+        <svg><use href="#icon-fish"></use></svg>
+        <span class="nav-tab-label">Spesies Ikan</span>
+      </button>
+      <button type="button" class="nav-tab-btn" id="nav-tab-tactics" data-tab="tactics" role="tab" aria-selected="false" aria-controls="view-tactics">
+        <svg><use href="#icon-tactics"></use></svg>
+        <span class="nav-tab-label">Taktik &amp; Cuaca</span>
+      </button>
+    </nav>
+
+    <!-- ======================================================================
+         TOAST NOTIFICATION
+         ====================================================================== -->
+    <div class="toast-container" id="toast-container" role="status" aria-live="polite">
+      <svg class="toast-icon"><use href="#icon-check"></use></svg>
+      <span id="toast-message">Koordinat berhasil disalin!</span>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="leaflet.js"></script>
+  <script src="spots.js"></script>
+  <script src="species.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
