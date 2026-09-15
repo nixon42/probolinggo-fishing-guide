@@ -899,7 +899,7 @@
     return `
       <div class="map-popup-card">
         ${spot.imageUrl ? `
-          <div style="width: 100%; height: 100px; border-radius: 6px; overflow: hidden; margin-bottom: 8px; background: #0c121e;">
+          <div style="width: 100%; height: 82px; border-radius: 6px; overflow: hidden; margin-bottom: 6px; background: #0c121e;">
             <img src="${escapeHtml(spot.imageUrl)}" alt="${escapeHtml(spot.name)}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.style.display='none'">
           </div>
         ` : ''}
@@ -923,13 +923,16 @@
         </div>
         <div class="popup-actions">
           <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="btn-gmaps" title="Buka rute navigasi di Google Maps">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
             </svg>
-            <span>Buka Google Maps &rarr;</span>
+            <span>Google Maps</span>
           </a>
-          <button type="button" class="btn-popup-detail" onclick="app.openSpotModal('${spot.id}')">
-            <span>Lihat Detail &amp; Taktik Spot</span>
+          <button type="button" class="btn-popup-detail" onclick="app.openSpotModal('${spot.id}')" title="Buka profil lengkap &amp; taktik spot">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>Detail Spot</span>
           </button>
         </div>
       </div>
@@ -1019,8 +1022,12 @@
           const marker = L.marker([spot.coordinates.lat, spot.coordinates.lng], { icon: icon });
           marker.bindPopup(createSpotPopupContent(spot), {
             className: 'angler-popup',
-            maxWidth: 290,
-            autoPanPadding: [15, 15]
+            maxWidth: 300,
+            minWidth: 250,
+            autoPan: true,
+            autoPanPaddingTopLeft: [20, 20],
+            autoPanPaddingBottomRight: [20, 40],
+            autoPanPadding: [20, 35]
           });
 
           marker.on('click', function () {
@@ -1120,14 +1127,20 @@
       }
 
       mapInstance.flyTo([spot.coordinates.lat, spot.coordinates.lng], 14, {
-        duration: 0.9
+        duration: 0.6
       });
 
-      setTimeout(function () {
+      let popupOpened = false;
+      function openMarkerPopup() {
+        if (popupOpened) return;
+        popupOpened = true;
         if (marker) {
           marker.openPopup();
         }
-      }, 500);
+      }
+
+      mapInstance.once('moveend', openMarkerPopup);
+      setTimeout(openMarkerPopup, 650);
 
       highlightMapPill(spotId);
     }
